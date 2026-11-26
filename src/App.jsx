@@ -1,79 +1,77 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
-import Sidebar from './components/Sidebar.jsx'
-import Header from './components/Header.jsx'
 import ContextoProblema from './components/ContextoProblema.jsx'
 import Grafico from './components/Grafico.jsx'
-import { graficos } from './data/graficos.js'
 import PrediccionPlaceholder from './components/PrediccionPlaceholder.jsx'
+import { graficos } from './data/graficos.js'
+import datos from './data/monitoreo.json'
+
+function leerVista() {
+  return window.location.hash === '#prediccion' ? 'prediccion' : 'contexto'
+}
 
 function App() {
-  const [activeView, setActiveView] = useState('contexto')
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [vista, setVista] = useState(leerVista)
+  useEffect(() => {
+    const actualizarVista = () => setVista(leerVista())
+    window.addEventListener('hashchange', actualizarVista)
+    return () => window.removeEventListener('hashchange', actualizarVista)
+  }, [])
 
-  const handleNavigate = (view) => {
-    setActiveView(view)
-    setSidebarOpen(false)
-  }
-
-  const viewTitle = activeView === 'contexto'
-    ? 'Dashboard de Contexto'
-    : 'Predicción IA'
+  useEffect(() => {
+    const id = window.location.hash.slice(1)
+    if (id) document.getElementById(id)?.scrollIntoView()
+  }, [vista])
 
   return (
-    <div className="app-shell">
-      {sidebarOpen && (
-        <button
-          aria-label="Cerrar menú de navegación"
-          className="sidebar-backdrop"
-          onClick={() => setSidebarOpen(false)}
-          type="button"
-        />
-      )}
+    <>
+      <a className="skip-link" href="#contenido">Saltar al contenido</a>
+      <header className="site-header">
+        <div className="shell header-content">
+          <a className="wordmark" href="#inicio" aria-label="Residual Web, inicio">
+            <span className="brand-symbol" aria-hidden="true"><i /><i /><i /></span>
+            Residual<span>Web</span>
+          </a>
+          <nav aria-label="Navegación principal">
+            <a href="#inicio">Contexto</a>
+            <a href="#analisis">Gráficos</a>
+            <a href="#prediccion" aria-current={vista === 'prediccion' ? 'page' : undefined}>Predicción IA</a>
+          </nav>
+        </div>
+      </header>
 
-      <Sidebar
-        activeView={activeView}
-        isOpen={sidebarOpen}
-        onNavigate={handleNavigate}
-      />
-
-      <main className="dashboard">
-        <Header
-          activeView={activeView}
-          onMenuClick={() => setSidebarOpen(true)}
-          title={viewTitle}
-        />
-
-        <div className="dashboard-content">
-          {activeView === 'contexto' ? (
-            <section aria-labelledby="charts-heading" className="view-panel">
-              <ContextoProblema />
-
+      <main id="contenido" tabIndex={-1}>
+        {vista === 'contexto' ? (
+          <>
+            <ContextoProblema />
+            <section className="shell gallery" id="analisis" aria-labelledby="charts-heading" data-ui>
               <div className="section-heading">
                 <div>
-                  <span className="section-kicker">Análisis del dataset Mi Cole</span>
-                  <h2 id="charts-heading">Gráficos del monitoreo</h2>
+                  <h2 id="charts-heading">El monitoreo en gráficos</h2>
+                  <p>Explora cómo cambian las mediciones según el territorio, el periodo y el prestador.</p>
                 </div>
-                <span className="section-count">{graficos.length} GRÁFICOS</span>
               </div>
-
               <div className="charts-grid">
-                {graficos.map((grafico) => (
-                  <Grafico key={grafico.id} grafico={grafico} />
-                ))}
+                {graficos.map((grafico) => <Grafico key={grafico.id} grafico={grafico} />)}
               </div>
             </section>
-          ) : (
+          </>
+        ) : (
+          <div className="shell prediction-shell" id="prediccion">
+            <a className="text-link" href="#analisis"><span aria-hidden="true">←</span> Volver a los gráficos</a>
             <PrediccionPlaceholder />
-          )}
-
-          <footer className="dashboard-footer">
-            <span>RESIDUAL-WEB <span className="footer-divider">/</span> APURÍMAC, PERÚ</span>
-            <span>Proyecto universitario · Machine Learning</span>
-          </footer>
-        </div>
+          </div>
+        )}
       </main>
-    </div>
+
+      <footer className="site-footer">
+        <div className="shell footer-content">
+          <div><strong>Residual Web</strong><p>Calidad del agua escolar en Apurímac, Perú.</p></div>
+          <div><strong>Fuente de datos</strong><p>Monitoreo Mi Cole · Corte {datos.corte}</p></div>
+          <a href="#inicio">Volver al inicio <span aria-hidden="true">↑</span></a>
+        </div>
+      </footer>
+    </>
   )
 }
 
