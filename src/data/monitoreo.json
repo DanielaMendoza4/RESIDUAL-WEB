@@ -1,0 +1,15 @@
+{
+  "registros": 1949,
+  "provincias": 7,
+  "distritos": 56,
+  "cumplen": 503,
+  "estados": {
+    "CRITICO": 999,
+    "OPTIMO": 493,
+    "DEFICIENTE": 447,
+    "ALTO": 10
+  },
+  "desde": "2025-03",
+  "hasta": "2026-10",
+  "corte": "2026-10-26"
+}

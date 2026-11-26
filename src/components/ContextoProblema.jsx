@@ -1,74 +1,58 @@
-const datasetDetails = [
-  {
-    label: 'Departamento',
-    value: 'Apurímac',
-    detail: '7 provincias',
-    mark: '01',
-  },
-  {
-    label: 'Variable objetivo',
-    value: 'Estado',
-    detail: 'Óptimo / Deficiente / Crítico',
-    mark: '02',
-  },
-  {
-    label: 'Prestadores',
-    value: 'JASS',
-    detail: 'UGM Municipal · EPS',
-    mark: '03',
-  },
-]
+import hero from '../assets/muestra-editorial.webp'
+import datos from '../data/monitoreo.json'
 
-function ContextoProblema() {
-  return (
-    <section aria-labelledby="problem-heading" className="context-section" id="dashboard">
-      <div className="context-card">
-        <div className="context-copy">
-          <span className="context-eyebrow"><span /> CALIDAD DEL AGUA ESCOLAR</span>
-          <h2 id="problem-heading">
-            El agua segura también se mide.
-          </h2>
-          <p>
-            En los colegios de Apurímac, monitorear el cloro residual ayuda a verificar
-            la desinfección del agua. Según el criterio de este proyecto, niveles menores
-            a <strong>0.5 mg/L</strong> pueden representar un riesgo sanitario. Con el
-            dataset <strong>Mi Cole</strong>, el modelo de Machine Learning estudiará
-            las mediciones de cloro residual (<code>clo_resid</code>) para estimar el
-            estado de cumplimiento.
-          </p>
-          <div aria-label="Categorías de estado" className="status-legend">
-            <span><i className="status-dot status-dot--optimal" /> Óptimo</span>
-            <span><i className="status-dot status-dot--deficient" /> Deficiente</span>
-            <span><i className="status-dot status-dot--critical" /> Crítico</span>
-          </div>
-        </div>
+const entero = new Intl.NumberFormat('es-PE')
+const porcentaje = new Intl.NumberFormat('es-PE', { style: 'percent', maximumFractionDigits: 1 })
+const periodos = new Intl.DateTimeFormat('es-PE', { month: 'long', year: 'numeric', timeZone: 'UTC' })
 
-        <div className="context-aside">
-          <div className="context-aside-top">
-            <span>VARIABLE DE ESTUDIO</span>
-            <span className="context-aside-tag">Mi Cole</span>
-          </div>
-          <div className="chlorine-value">clo_resid</div>
-          <div className="chlorine-rule">
-            <span>Umbral de referencia</span>
-            <strong>&lt; 0.5 mg/L</strong>
-          </div>
-          <p>Concentración de cloro residual en el agua.</p>
-        </div>
-      </div>
-
-      <div aria-label="Alcance del dataset" className="dataset-grid">
-        {datasetDetails.map(({ label, value, detail, mark }) => (
-          <article className="dataset-card" key={label}>
-            <span aria-hidden="true" className="dataset-mark">{mark}</span>
-            <div className="dataset-label">{label}</div>
-            <div className="dataset-value">{value}</div>
-            <div className="dataset-detail">{detail}</div>
-          </article>
-        ))}
-      </div>
-    </section>
-  )
+function mes(periodo) {
+  return periodos.format(new Date(`${periodo}-01T00:00:00Z`))
 }
 
-export default ContextoProblema
+export default function ContextoProblema() {
+  const criticos = porcentaje.format(datos.estados.CRITICO / datos.registros)
+  const indicadores = [
+    ['Registros de monitoreo', entero.format(datos.registros)],
+    ['Provincias', entero.format(datos.provincias)],
+    ['Distritos', entero.format(datos.distritos)],
+    ['Cumplimiento registrado', porcentaje.format(datos.cumplen / datos.registros)],
+  ]
+
+  return (
+    <>
+      <section className="shell hero" id="inicio" aria-labelledby="hero-title">
+        <div className="hero-copy">
+          <h1 id="hero-title"><span>Agua en</span><span>mi cole.</span></h1>
+          <p>Monitoreo de cloro residual en las instituciones educativas de Apurímac.</p>
+          <a className="primary-link" href="#analisis">Explorar los gráficos <span className="arrow arrow--diagonal" aria-hidden="true" /></a>
+        </div>
+        <div className="hero-art">
+          <img src={hero} width="1280" height="853" alt="Ilustración de un frasco de muestreo sobre agua en movimiento"
+            fetchPriority="high" />
+        </div>
+      </section>
+
+      <div className="metrics-band">
+        <dl className="shell metrics">
+          {indicadores.map(([label, value]) => (
+            <div className="metric" key={label}>
+              <dt>{label}</dt><dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <section className="shell context-section" aria-labelledby="problem-heading">
+        <div>
+          <h2 id="problem-heading">Lo que muestran<br />las mediciones</h2>
+          <p className="coverage">{mes(datos.desde)} a {mes(datos.hasta)}</p>
+        </div>
+        <div className="context-copy">
+          <p className="context-lead"><strong>{criticos}</strong> de los registros del archivo están clasificados como críticos.</p>
+          <p>El cloro residual ayuda a seguir la desinfección del agua. Los datos de Mi Cole permiten comparar los monitoreos por zona, prestador y periodo. Cada fila corresponde a un registro de monitoreo.</p>
+          <p>El cumplimiento se presenta según el indicador del archivo. El cloro residual es un componente de la evaluación de la calidad del agua.</p>
+        </div>
+      </section>
+    </>
+  )
+}
