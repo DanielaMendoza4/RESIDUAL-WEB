@@ -3,27 +3,9 @@ import './App.css'
 import Sidebar from './components/Sidebar.jsx'
 import Header from './components/Header.jsx'
 import ContextoProblema from './components/ContextoProblema.jsx'
-import GraficoPlaceholder from './components/GraficoPlaceholder.jsx'
+import Grafico from './components/Grafico.jsx'
+import { graficos } from './data/graficos.js'
 import PrediccionPlaceholder from './components/PrediccionPlaceholder.jsx'
-
-const charts = [
-  {
-    title: 'Distribución de Estados de Cloro',
-    member: 'Espacio Integrante 1',
-  },
-  {
-    title: 'Cloro Residual Promedio por Provincia',
-    member: 'Espacio Integrante 2',
-  },
-  {
-    title: 'Cumplimiento por Tipo de Prestador',
-    member: 'Espacio Integrante 3',
-  },
-  {
-    title: 'Evolución Temporal por Periodo',
-    member: 'Espacio Integrante 4',
-  },
-]
 
 function App() {
   const [activeView, setActiveView] = useState('contexto')
@@ -70,18 +52,14 @@ function App() {
               <div className="section-heading">
                 <div>
                   <span className="section-kicker">Análisis del dataset Mi Cole</span>
-                  <h2 id="charts-heading">Espacios para gráficos</h2>
+                  <h2 id="charts-heading">Gráficos del monitoreo</h2>
                 </div>
-                <span className="section-count">4 GRÁFICOS · COLAB</span>
+                <span className="section-count">{graficos.length} GRÁFICOS</span>
               </div>
 
               <div className="charts-grid">
-                {charts.map((chart, index) => (
-                  <GraficoPlaceholder
-                    key={chart.member}
-                    number={index + 1}
-                    {...chart}
-                  />
+                {graficos.map((grafico) => (
+                  <Grafico key={grafico.id} grafico={grafico} />
                 ))}
               </div>
             </section>
