@@ -50,7 +50,7 @@ function App() {
           </>
         ) : (
           <div className="shell prediction-shell" id="prediccion">
-            <a className="text-link" href="#analisis"><span aria-hidden="true">←</span> Volver a los gráficos</a>
+            <a className="text-link" href="#analisis"><span className="arrow arrow--left" aria-hidden="true" /> Volver a los gráficos</a>
             <PrediccionPlaceholder />
           </div>
         )}
@@ -60,7 +60,7 @@ function App() {
         <div className="shell footer-content">
           <div><strong>Residual Web</strong><p>Calidad del agua escolar en Apurímac, Perú.</p></div>
           <div><strong>Fuente de datos</strong><p>Monitoreo Mi Cole · Corte {datos.corte.split('-').reverse().join('/')}</p></div>
-          <a href="#inicio">Volver al inicio <span aria-hidden="true">↑</span></a>
+          <a href="#inicio">Volver al inicio <span className="arrow arrow--up" aria-hidden="true" /></a>
         </div>
       </footer>
     </>

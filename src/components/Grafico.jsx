@@ -8,10 +8,10 @@ export default function Grafico({ grafico, onExpand }) {
           <p className="chart-group">{grafico.grupo}</p>
           <h3>{grafico.title}</h3>
         </div>
-                  <button className="chart-expand" type="button" onClick={(event) => onExpand(grafico, event.currentTarget)}
-            aria-label={`Ampliar gráfico: ${grafico.title}`}>
-            <span aria-hidden="true">↗</span>
-          </button>
+                <button className="chart-expand" type="button" onClick={(event) => onExpand(grafico, event.currentTarget)}
+          aria-label={`Ampliar gráfico: ${grafico.title}`}>
+          <span className="arrow arrow--expand" aria-hidden="true" />
+        </button>
       </figcaption>
       <img alt={grafico.alt} src={rutaGrafico(grafico.id)} width="1260" height="720"
         decoding="async" loading="lazy" className="chart-image" />

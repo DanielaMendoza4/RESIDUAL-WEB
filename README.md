@@ -1,19 +1,29 @@
-# React + Vite
+# Residual Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dashboard académico para explorar el monitoreo de cloro residual en las instituciones educativas de Apurímac. Incluye diez gráficos de Matplotlib, filtros por tema y una vista ampliada con descarga de PNG.
 
-Currently, two official plugins are available:
+## Desarrollo local
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm ci
+npm run dev
+npm run lint
+npm run build
+```
 
-## React Compiler
+Para un despliegue Vite, se usa `npm run build` y el directorio de salida `dist`.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Actualizar datos y gráficos
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+Se requiere Python 3 con Pandas y Matplotlib. Los comandos reciben el CSV del proyecto, con punto y coma como separador y encabezados originales.
 
-## Expanding the ESLint configuration
+```bash
+python scripts/monitoreo.py ruta/al/cloro_residual_mi_cole_0.csv
+python scripts/graficos.py ruta/al/cloro_residual_mi_cole_0.csv
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+El primer comando actualiza el resumen en `src/data/monitoreo.json`. El segundo escribe los diez PNG en `public/graficos/`. Las fichas que acompañan cada gráfico están en `src/data/graficos.js`. Si cambia el periodo o la distribución, revisar también los textos interpretativos.
+
+Cada fila corresponde a un registro de monitoreo. El cumplimiento usa el indicador `cumple_nor` del CSV. La pestaña de predicción conserva el formulario de la plantilla para la integración posterior del modelo.
+
+Barlow Condensed y DM Sans se incluyen con sus licencias en `public/fonts/`. La ilustración editorial de portada se generó para este proyecto.

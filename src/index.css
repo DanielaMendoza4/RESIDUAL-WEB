@@ -14,7 +14,7 @@
 
 :root {
   font-family: 'DM Sans', system-ui, sans-serif;
-  color: #f5f5ec;
+  color: #f6f6f4;
   background: #111310;
   color-scheme: dark;
   font-synthesis: none;
@@ -23,7 +23,7 @@
   --ground: #111310;
   --surface: #1a1e18;
   --edge: #353b30;
-  --ink: #f5f5ec;
+  --ink: #f6f6f4;
   --muted: #bdc4b5;
   --accent: #c4f65a;
   --display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;

@@ -5,6 +5,7 @@ import Grafico from './Grafico.jsx'
 export default function GaleriaGraficos() {
   const [grupo, setGrupo] = useState('Todos')
   const [ampliado, setAmpliado] = useState(null)
+  const [zoom, setZoom] = useState(false)
   const dialogo = useRef(null)
   const botonOrigen = useRef(null)
   const visibles = grupo === 'Todos' ? graficos : graficos.filter((grafico) => grafico.grupo === grupo)
@@ -20,11 +21,12 @@ export default function GaleriaGraficos() {
 
   function cerrar() {
     setAmpliado(null)
+    setZoom(false)
     botonOrigen.current?.focus()
   }
 
   return (
-    <section className="shell gallery" id="analisis" aria-labelledby="charts-heading" data-ui>
+    <section className="shell gallery" id="analisis" aria-labelledby="charts-heading">
       <div className="section-heading">
         <div>
           <h2 id="charts-heading">El monitoreo en gráficos</h2>
@@ -50,9 +52,18 @@ export default function GaleriaGraficos() {
               <h3 id="dialogo-grafico">{ampliado.title}</h3>
               <form method="dialog"><button className="chart-expand" aria-label="Cerrar gráfico" type="submit">×</button></form>
             </div>
-            <img src={rutaGrafico(ampliado.id)} alt={ampliado.alt} width="1260" height="720" />
+            <div className={zoom ? 'dialog-image dialog-image--zoom' : 'dialog-image'}
+              tabIndex={zoom ? 0 : undefined} role={zoom ? 'region' : undefined}
+              aria-label={zoom ? 'Gráfico ampliado con desplazamiento horizontal' : undefined}>
+              <img src={rutaGrafico(ampliado.id)} alt={ampliado.alt} width="1260" height="720" />
+            </div>
             <p>{ampliado.description}</p>
-            <a className="text-link" href={rutaGrafico(ampliado.id)} download>Descargar PNG <span aria-hidden="true">↓</span></a>
+            <div className="dialog-actions">
+              <button type="button" className="zoom-control" aria-pressed={zoom} onClick={() => setZoom(!zoom)}>
+                ${''}{zoom ? 'Ajustar a la pantalla' : 'Ampliar detalle'}
+              </button>
+              <a className="text-link" href={rutaGrafico(ampliado.id)} download>Descargar PNG</a>
+            </div>
           </>
         )}
       </dialog>

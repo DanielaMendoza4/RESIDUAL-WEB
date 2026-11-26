@@ -106,3 +106,21 @@
   .chart-caption { padding-inline: .9rem; }
   .chart-interpretation { padding-inline: .9rem; }
 }
+
+.arrow { display: inline-block; width: .8em; height: .8em; position: relative; flex: none; }
+.arrow::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; border-top: .12em solid currentColor; transform: translateY(-50%); }
+.arrow::after { content: ''; position: absolute; width: .42em; height: .42em; right: 0; top: 50%; border-top: .12em solid currentColor; border-right: .12em solid currentColor; transform: translateY(-50%) rotate(45deg); }
+.arrow--diagonal { transform: rotate(45deg); }
+.arrow--expand { font-size: 1rem; transform: rotate(-45deg); }
+.arrow--up { transform: rotate(-90deg); }
+.arrow--left { transform: rotate(180deg); }
+.chart-expand { display: inline-grid; place-items: center; }
+.dialog-image { overflow-x: auto; margin-block: .5rem; }
+.dialog-image--zoom img { min-width: 64rem; }
+.dialog-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; margin-top: .5rem; }
+.zoom-control { min-height: 44px; padding: .5rem .7rem; background: var(--ground); color: var(--ink); border: 1px solid var(--edge); }
+.zoom-control:hover { border-color: var(--accent); }
+@media (max-width: 650px) {
+  .chart-filters { gap: .35rem; }
+  .chart-filters button { padding-inline: .55rem; font-size: .88rem; }
+}

@@ -24,7 +24,7 @@ export default function ContextoProblema() {
         <div className="hero-copy">
           <h1 id="hero-title"><span>Agua en</span><span>mi cole.</span></h1>
           <p>Monitoreo de cloro residual en las instituciones educativas de Apurímac.</p>
-          <a className="primary-link" href="#analisis">Explorar los gráficos <span aria-hidden="true">↘</span></a>
+          <a className="primary-link" href="#analisis">Explorar los gráficos <span className="arrow arrow--diagonal" aria-hidden="true" /></a>
         </div>
         <div className="hero-art">
           <img src={hero} width="1280" height="853" alt="Ilustración de un frasco de muestreo sobre agua en movimiento"
