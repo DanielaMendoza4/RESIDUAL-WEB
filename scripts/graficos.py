@@ -17,6 +17,10 @@ MUTED = "#aeb5a6"
 FONDO = "#1a1e18"
 LIMA = "#c4f65a"
 COLORES = {"CRITICO": "#ff8879", "DEFICIENTE": "#e6bd6e", "OPTIMO": LIMA, "ALTO": "#bbadfa"}
+AZUL = "#67a9ff"
+TURQUESA = "#55b8a8"
+ROJO = "#ef6a67"
+AMARILLO = "#e6bd6e"
 ETIQUETAS = {"CRITICO": "Crítico", "DEFICIENTE": "Deficiente", "OPTIMO": "Óptimo", "ALTO": "Alto"}
 
 plt.rcParams.update({
@@ -38,7 +42,16 @@ def guardar(fig, destino, nombre):
     plt.close(fig)
 
 
-def barras_horizontales(serie, etiqueta, color=LIMA):
+def color_por_valor(valor, minimo, maximo):
+    posicion = (valor - minimo) / (maximo - minimo) if maximo > minimo else 1
+    if posicion < .33:
+        return ROJO
+    if posicion < .67:
+        return AMARILLO
+    return LIMA
+
+
+def barras_horizontales(serie, etiqueta, color=AZUL):
     fig, ax = figura()
     barras = ax.barh([fill(str(v), width=25) for v in serie.index], serie.values, color=color)
     ax.bar_label(barras, padding=5, color=TINTA, fontsize=10)
@@ -79,7 +92,8 @@ def principal():
         ("tasa", "cumplimiento-mensual", "Cumplimiento registrado"),
     ):
         fig, ax = figura()
-        ax.plot(range(len(mensual)), mensual[campo], color=LIMA, linewidth=2.5, marker="o", markersize=4)
+        color = AZUL if campo == "promedio" else AMARILLO
+        ax.plot(range(len(mensual)), mensual[campo], color=color, linewidth=2.5, marker="o", markersize=4)
         marcas = sorted(set(range(0, len(mensual), 4)) | {len(mensual) - 1})
         ax.set(xticks=marcas, xticklabels=mensual.index[marcas], xlabel="Periodo", ylabel=etiqueta)
         ax.set_ylim(bottom=0)
@@ -94,7 +108,8 @@ def principal():
 
     fig, ax = figura()
     medias = provincias["clo_resid"].mean().sort_values(ascending=False)
-    barras = ax.bar(medias.index, medias, color=LIMA)
+    colores = [color_por_valor(valor, medias.min(), medias.max()) for valor in medias]
+    barras = ax.bar(medias.index, medias, color=colores)
     ax.bar_label(barras, fmt="%.2f", color=TINTA, padding=5, fontsize=10)
     ax.set(ylabel="Cloro residual promedio", ylim=(0, medias.max() * 1.2))
     plt.setp(ax.get_xticklabels(), rotation=32, ha="right")
@@ -103,7 +118,8 @@ def principal():
 
     fig, ax = figura()
     nombres = [fill(f"{nombre} (n={fila.cantidad:.0f})", 28) for nombre, fila in prestadores.iterrows()]
-    barras = ax.barh(nombres, prestadores["tasa"], color=LIMA)
+    colores = [color_por_valor(valor, prestadores["tasa"].min(), prestadores["tasa"].max()) for valor in prestadores["tasa"]]
+    barras = ax.barh(nombres, prestadores["tasa"], color=colores)
     ax.bar_label(barras, labels=[f"{v:.1%}" for v in prestadores["tasa"]], color=TINTA, padding=5, fontsize=10)
     ax.set(xlabel="Cumplimiento registrado", xlim=(0, 1.12), xticks=[0, .25, .5, .75, 1])
     ax.xaxis.set_major_formatter(mticker.PercentFormatter(1, decimals=0))
@@ -112,7 +128,7 @@ def principal():
 
     fig, ax = figura()
     puntos = datos.groupby(["longitud", "latitud"], as_index=False)["clo_resid"].mean()
-    imagen = ax.scatter(puntos["longitud"], puntos["latitud"], c=puntos["clo_resid"], cmap="viridis",
+    imagen = ax.scatter(puntos["longitud"], puntos["latitud"], c=puntos["clo_resid"], cmap="RdYlGn",
                         s=40, linewidths=.5, edgecolors=TINTA)
     fig.colorbar(imagen, ax=ax).set_label("Cloro residual promedio")
     ax.set(xlabel="Longitud", ylabel="Latitud")
@@ -121,7 +137,10 @@ def principal():
     guardar(fig, destino, "puntos-monitoreados")
 
     fig, ax = figura()
-    ax.hist(datos["clo_resid"], bins=18, color=LIMA, edgecolor=FONDO)
+    conteos, bordes, parches = ax.hist(datos["clo_resid"], bins=18, edgecolor=FONDO)
+    centros = (bordes[:-1] + bordes[1:]) / 2
+    for parche, centro in zip(parches, centros):
+        parche.set_facecolor(color_por_valor(centro, bordes.min(), bordes.max()))
     ax.set(xlabel="Cloro residual", ylabel="Registros")
     ax.grid(axis="y")
     guardar(fig, destino, "distribucion-cloro")

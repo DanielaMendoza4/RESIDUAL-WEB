@@ -14,19 +14,33 @@
 
 :root {
   font-family: 'DM Sans', system-ui, sans-serif;
-  color: #f6f6f4;
-  background: #111310;
-  color-scheme: dark;
+  color: #1b1d19;
+  background: #f4f6ef;
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  --ground: #f4f6ef;
+  --surface: #ffffff;
+  --edge: #d4d9cb;
+  --ink: #1b1d19;
+  --muted: #5d6457;
+  --accent: #86a600;
+  --on-accent: #1b1d19;
+  --display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+}
+
+:root[data-theme='oscuro'] {
+  color: #f6f6f4;
+  background: #111310;
+  color-scheme: dark;
   --ground: #111310;
   --surface: #1a1e18;
   --edge: #353b30;
   --ink: #f6f6f4;
   --muted: #bdc4b5;
   --accent: #c4f65a;
-  --display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --on-accent: #111310;
 }
 
 * { box-sizing: border-box; }
